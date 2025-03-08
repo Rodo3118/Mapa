@@ -1,10 +1,13 @@
 document.getElementById("btn-colocar").addEventListener("click", colocarPunto);
 document.getElementById("btn-eliminar").addEventListener("click", eliminarUltimoPunto);
 document.getElementById("btn-guardar").addEventListener("click", guardarMapaPDF);
+const mapa = document.getElementById("mapa");
+const rect = mapa.getBoundingClientRect();
+const imgWidth = rect.width;
+const imgHeight = rect.height;
 
 const latMin = 19.6, latMax = 19.0;
 const lonMin = -99.4, lonMax = -98.9;
-const imgWidth = 800, imgHeight = 1129;
 const latCenter = 19.3;
 const lonCenter = -99.15;
 let puntos = [];
@@ -25,6 +28,10 @@ function corregirEscala(lon, lat) {
 }
 
 function colocarPunto() {
+    const rect = mapa.getBoundingClientRect(); // Obtener tamaño actual de la imagen
+    const imgWidth = rect.width;
+    const imgHeight = rect.height;
+
     let lat = normalizarCoordenada(parseFloat(document.getElementById("latitud").value));
     let lon = normalizarCoordenada(parseFloat(document.getElementById("longitud").value));
     let color = document.getElementById("color").value;
@@ -51,6 +58,7 @@ function colocarPunto() {
     document.getElementById("mapa-container").appendChild(punto);
     puntos.push(punto);
 }
+
 
 function eliminarUltimoPunto() {
     if (puntos.length > 0) {
