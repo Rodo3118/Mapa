@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de Delitos</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Registro de Incidentes</h2>
+        <div class="input-group">
+            <label for="latitud">Latitud:</label>
+            <input type="number" id="latitud" step="0.00000001">
+        </div>
+        <div class="input-group">
+            <label for="longitud">Longitud:</label>
+            <input type="number" id="longitud" step="0.00000001">
+        </div>
+        <div class="input-group">
+            <label for="color">Tipo de Incidente:</label>
+            <select id="color">
+                <option value="red">Ajuste de Cuentas</option>
+                <option value="#DBE4A9">Riña</option>
+                <option value="yellow">Robo</option>
+                <option value="#D8BFD8">Feminicidio</option>
+                <option value="orange">Agresión Directa</option>
+                <option value="#4E97D1">Etiología a Determinar</option>
+                <option value="#02BA26">Hallazgo de Cadáver</option>
+                <option value="#8B4513">Conflicto Sentimental</option>
+                <option value="#FF00BC">Quemado</option>
+            </select>
+        </div>
+        <button id="btn-colocar">Registrar Incidente</button>
+        <button id="btn-eliminar">Eliminar Último Punto</button>
+        <button id="btn-guardar">Guardar Mapa como PDF</button>
+    </div>
+
+    <div id="mapa-container">
+        <img id="mapa" src="mapa_plantilla.png" alt="Mapa de la CDMX">
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
