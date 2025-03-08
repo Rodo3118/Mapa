@@ -2,15 +2,12 @@ document.getElementById("btn-colocar").addEventListener("click", colocarPunto);
 document.getElementById("btn-eliminar").addEventListener("click", eliminarUltimoPunto);
 document.getElementById("btn-guardar").addEventListener("click", guardarMapaPDF);
 const mapa = document.getElementById("mapa");
-const rect = mapa.getBoundingClientRect();
-const imgWidth = rect.width;
-const imgHeight = rect.height;
 
 const latMin = 19.6, latMax = 19.0;
 const lonMin = -99.4, lonMax = -98.9;
 const latCenter = 19.3;
 const lonCenter = -99.15;
-let puntos = [];
+let puntos = []; // Guardaremos los puntos con sus coordenadas originales
 
 function normalizarCoordenada(valor) {
     if (isNaN(valor)) return NaN;
@@ -28,10 +25,6 @@ function corregirEscala(lon, lat) {
 }
 
 function colocarPunto() {
-    const rect = mapa.getBoundingClientRect(); // Obtener tamaño actual de la imagen
-    const imgWidth = rect.width;
-    const imgHeight = rect.height;
-
     let lat = normalizarCoordenada(parseFloat(document.getElementById("latitud").value));
     let lon = normalizarCoordenada(parseFloat(document.getElementById("longitud").value));
     let color = document.getElementById("color").value;
@@ -41,29 +34,41 @@ function colocarPunto() {
         return;
     }
 
-    let { factorLat, factorLon } = corregirEscala(lon, lat);
-
-    let x = ((lon - lonMin) / (lonMax - lonMin)) * imgWidth * factorLon;
-    let y = ((lat - latMin) / (latMax - latMin)) * imgHeight * factorLat;
-
-    x = Math.min(Math.max(x, 0), imgWidth);
-    y = Math.min(Math.max(y, 0), imgHeight);
-
     let punto = document.createElement("div");
     punto.className = "punto";
     punto.style.backgroundColor = color;
-    punto.style.left = `${x}px`;
-    punto.style.top = `${y}px`;
 
     document.getElementById("mapa-container").appendChild(punto);
-    puntos.push(punto);
+
+    // Guardamos los datos originales del punto
+    puntos.push({ elemento: punto, lat, lon, color });
+
+    actualizarPosiciones(); // Colocamos el punto en la posición correcta
 }
 
+function actualizarPosiciones() {
+    const rect = mapa.getBoundingClientRect(); // Tamaño actual de la imagen
+    const imgWidth = rect.width;
+    const imgHeight = rect.height;
+
+    puntos.forEach(p => {
+        let { factorLat, factorLon } = corregirEscala(p.lon, p.lat);
+
+        let x = ((p.lon - lonMin) / (lonMax - lonMin)) * imgWidth * factorLon;
+        let y = ((p.lat - latMin) / (latMax - latMin)) * imgHeight * factorLat;
+
+        x = Math.min(Math.max(x, 0), imgWidth);
+        y = Math.min(Math.max(y, 0), imgHeight);
+
+        p.elemento.style.left = `${x}px`;
+        p.elemento.style.top = `${y}px`;
+    });
+}
 
 function eliminarUltimoPunto() {
     if (puntos.length > 0) {
         let ultimoPunto = puntos.pop();
-        ultimoPunto.remove();
+        ultimoPunto.elemento.remove();
     } else {
         alert("No hay puntos para eliminar.");
     }
@@ -84,3 +89,7 @@ function guardarMapaPDF() {
         pdf.save("mapa_incidentes.pdf");
     });
 }
+
+// Evento para redibujar puntos cuando cambie el tamaño de la ventana
+window.addEventListener("resize", actualizarPosiciones);
+
