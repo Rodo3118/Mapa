@@ -3,11 +3,20 @@ document.getElementById("btn-eliminar").addEventListener("click", eliminarUltimo
 document.getElementById("btn-guardar").addEventListener("click", guardarMapaPDF);
 const mapa = document.getElementById("mapa");
 
+mapa.addEventListener("load", () => {
+    actualizarPosiciones();
+});
+
 const latMin = 19.6, latMax = 19.0;
 const lonMin = -99.4, lonMax = -98.9;
 const latCenter = 19.3;
 const lonCenter = -99.15;
 let puntos = []; // Guardaremos los puntos con sus coordenadas originales
+let resizeTimeout;
+window.addEventListener("resize", () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(actualizarPosiciones, 200);
+});
 
 function normalizarCoordenada(valor) {
     if (isNaN(valor)) return NaN;
@@ -92,4 +101,5 @@ function guardarMapaPDF() {
 
 // Evento para redibujar puntos cuando cambie el tamaño de la ventana
 window.addEventListener("resize", actualizarPosiciones);
+
 
